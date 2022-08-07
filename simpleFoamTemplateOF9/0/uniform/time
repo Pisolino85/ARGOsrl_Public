@@ -8,44 +8,23 @@
 FoamFile
 {
     format      ascii;
-    class       volScalarField;
-    object      p;
+    class       dictionary;
+    location    "0/uniform";
+    object      time;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include        "include/initialConditions"
+beginTime       0;
 
-dimensions      [0 2 -2 0 0 0 0];
+value           0;
 
-internalField   uniform $pressure_out;
+name            "0";
 
-boundaryField
-{
+index           0;
 
+deltaT          1;
 
-    inlet
-    {
-/*        type            fixedValue;*/
-/*        value           uniform $pressure_in;*/
-        type            zeroGradient;
-    }
+deltaT0         1;
 
-    "outlet.*"
-    {
-        type            fixedValue;
-        value           $internalField;
-    }
-
-    "wall.*"
-    {
-        type            zeroGradient;
-    }
-
-    "symmet.*"
-    {
-        type            symmetry;
-    }
-    
-}
 
 // ************************************************************************* //

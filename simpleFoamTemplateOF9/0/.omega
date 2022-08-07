@@ -29,7 +29,7 @@ boundaryField
         value $internalField;
     }
 
-    outlet
+    "outlet.*"
     {
         type            inletOutlet;
         inletValue      $internalField;

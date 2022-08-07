@@ -1,0 +1,116 @@
+#!/bin/bash
+
+###############################################################################
+#
+#   Script developped in 2019 by
+#   CFD FEA SERVICE SRL - via Borgo Grande 19, 37044 Cologna Veneta VR
+#
+#   License: GPLv3
+#
+###############################################################################
+
+nvCPU="$(grep -c ^processor /proc/cpuinfo)"
+nThrd="$(lscpu | grep Thread | sed 's/Thread(s) per core://g' | sed 's/ //g')"
+nProc=$(( $nvCPU / $nThrd ))
+echo "Detected $nvCPU vCPU with $nThrd threads each. Using $nProc physical CPU only."
+echo "CASE: $(pwd) $(date) - nProc=$nProc"
+sed -i "/numberOfSubdomains/c\numberOfSubdomains $nProc;" system/decomposeParDict
+
+. /opt/openfoam9/etc/bashrc
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+rm -rf processor* log.*
+rm -rf constant/polyMesh
+
+#Scompattiamo il contenuto della cartella constant
+gzip -d -r constant
+
+
+#MESH CON SNAPPY
+
+#Parte la meshatura
+runApplication -append blockMesh
+
+#Dato che dalla v8 cambia nome, li eseguiamo entrambi
+runApplication -append surfaceFeatures
+runApplication -append surfaceFeatureExtract
+
+#Controllo di decomposeParDict
+if ! grep -q "scotch" system/decomposeParDict
+then
+  echo "@@@ incorrect decomposeParDict file @@@"
+  exit
+fi
+
+runApplication -append decomposePar -copyZero
+
+runParallel -append snappyHexMesh -overwrite
+
+#Controllo di conclusione positiva di snappyHexMesh
+if ! grep -q "Finalising parallel run" log.snappyHexMesh
+then
+  echo "snappyHexMesh failure!"
+fi
+
+
+#Renumber eseguito prima di checkMesh -> sistema alcuni problemi
+#runParallel -append renumberMesh -overwrite #Renumber non fatto piu e spostato in openFoam
+runParallel -append checkMesh -allGeometry -allTopology -writeSets vtk
+
+grep "Mesh stats" -A 5 log.checkMesh
+grep "Number of regions" log.checkMesh
+grep "\*\*\*" log.checkMesh
+
+runApplication -append reconstructParMesh -constant
+runApplication -append reconstructPar -withZero
+
+#Controllo di conclusione positiva di snappyHexMesh
+if grep -q "allBoundary" constant/polyMesh/boundary
+then
+   echo "@@@@@@@ allBoundary failure @@@@@@@@"
+fi
+
+#Rimozione processor* -> risparmiare spazio
+rm -rf processor*
+
+#Divisione delle regioni della MESH -> usa l'opzione splitMesh di controlDict
+splitMesh=($(foamDictionary -entry splitMesh -value system/controlDict 2> tmp.dat))
+rm tmp.dat
+
+if [ "$splitMesh" = "true" ]
+then 
+   mv 0 0.polyMesh
+   runApplication -append splitMeshRegions -cellZonesOnly -overwrite
+
+   #Con questa versione e' possibile non assegnare tutte le zone, ma e' imprecisa
+   #runApplication -append splitMeshRegions -cellZones -overwrite -sloppyCellZones
+
+#opzione per svolgere un check e tenere solo la zona piu' larga
+elif [ "$splitMesh" = "largest" ]
+then
+   echo "Splitting mesh to keep only largest zone ..."
+   mv 0 0.org
+   runApplication -append splitMeshRegions -largestOnly -overwrite
+   
+fi
+
+#Creazione di BAFFLE eseguendo createBaffles
+baffleMesh=($(foamDictionary -entry baffleMesh -value system/controlDict 2> tmp.dat))
+rm tmp.dat
+
+if [ "$baffleMesh" = "true" ]
+then 
+   runApplication createBaffles -overwrite
+   runApplication mergeOrSplitBaffles -split -overwrite
+fi
+
+#Riscaliamo la mesh - usa l'opzione scaleFactor di controlDict
+scaleFactor=($(foamDictionary -entry scaleFactor -value system/controlDict 2> tmp.dat ))
+rm tmp.dat
+
+if [ ! "$scaleFactor" = "" ]
+then 
+   echo "Rescaling mesh: $scaleFactor"
+   runApplication -append transformPoints "scale=($scaleFactor $scaleFactor $scaleFactor)"
+   runApplication -append transformPoints -scale "($scaleFactor $scaleFactor $scaleFactor)"
+fi

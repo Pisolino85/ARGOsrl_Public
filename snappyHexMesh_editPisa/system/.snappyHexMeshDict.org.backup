@@ -1,0 +1,136 @@
+FoamFile
+{
+	version     2.0;
+	format      ascii;
+	class       dictionary;
+	location    "system";
+	object      snappyHexMeshDict;
+}
+
+castellatedMesh   true;
+snap   true;
+addLayers    layersTrueOrFalse;
+
+geometry
+{
+SCRIPT-GEOMETRY
+SCRIPT-VOLGEO
+SCRIPT-BAFGEO
+};
+
+castellatedMeshControls
+{
+	maxLocalCells   20000000;
+	maxGlobalCells  60000000;
+	minRefinementCells  100;
+	maxLoadUnbalance 0.1;
+	nCellsBetweenLevels   12;
+	resolveFeatureAngle   30;
+SCRIPT-POINT-INSIDE
+	//locationInMesh   ( -39.814731 97.233055 197.596432);
+ 	allowFreeStandingZoneFaces   true;
+	planarAngle 30;
+
+	features
+	(
+SCRIPT-FEATURES
+	);
+
+	refinementRegions
+	{
+SCRIPT-REGREF
+	}
+
+	refinementSurfaces
+	{
+SCRIPT-REFINEMENT
+SCRIPT-VOLREF
+SCRIPT-BAFREF
+	}
+}
+
+snapControls
+{
+        // Controlla il sito: https://www.cfdsupport.com/OpenFOAM-Training-by-CFD-Support/node127.html
+
+	nSolveIter   30;
+	nSmoothPatch   3;
+	tolerance   2.0;
+	nRelaxIter   5;
+	nFeatureSnapIter  10;
+	implicitFeatureSnap   false;
+	explicitFeatureSnap   true;
+	multiRegionFeatureSnap   true;
+}
+
+
+addLayersControls
+{
+	relativeSizes   true;
+	expansionRatio    1.250000;
+	finalLayerThickness    0.400000;
+	//firstLayerThickness    0.100;
+	minThickness    0.0001000;
+	nGrow   0;
+	featureAngle   180; //da provare 180
+	slipFeatureAngle 30;
+	nRelaxIter   5;
+	nSmoothSurfaceNormals   1;
+	nSmoothNormals   3;
+	nSmoothThickness   10;
+	maxFaceThicknessRatio   0.5;
+	maxThicknessToMedialRatio   0.3;
+	minMedianAxisAngle   90;
+	nBufferCellsNoExtrude   0;
+	nLayerIter   50;
+	nRelaxedIter   20;
+	writeVTK false;
+	noErrors false;
+	layerRecovery 1;
+	growZoneLayers false;
+	projectGrownUp 0.0;
+	layers
+	{
+SCRIPT-LAYERS
+	}
+}
+
+
+meshQualityControls
+{
+	nSmoothScale   4;
+	errorReduction   0.75;
+	maxNonOrtho   70;
+	maxBoundarySkewness   20;
+	maxInternalSkewness   4;
+	maxConcave   80;
+	minFlatness   0.5;
+	minVol   1E-21;
+	minTetQuality   -1e-30;
+	minArea   -1;
+	minTwist   0.01;
+	minDeterminant    0.001;
+	minFaceWeight   0.02;
+	minVolRatio   0.01;
+	minTriangleTwist   -1;
+        errorReduction 0.75;
+	relaxed
+	{
+	  maxNonOrtho   75;
+        }
+}
+
+mergeTolerance   1E-9;
+autoBlockMesh true;
+
+
+// Advanced
+
+// Write flags
+writeFlags
+(
+    scalarLevels
+    layerSets
+    layerFields     // write volScalarField for layer coverage
+);
+

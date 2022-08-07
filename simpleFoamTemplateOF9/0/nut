@@ -34,7 +34,7 @@ boundaryField
         value           uniform 0;
     }
 
-    outlet
+    "outlet.*"
     {
         type            calculated;
         value           uniform 0;

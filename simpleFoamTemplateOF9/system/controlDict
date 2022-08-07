@@ -7,9 +7,9 @@
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
-    format      ascii;
-    class       dictionary;
-    object      controlDict;
+    format          ascii;
+    class           dictionary;
+    object          controlDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -21,7 +21,7 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         2000;
+endTime         3000;
 
 deltaT          1;
 
@@ -45,7 +45,6 @@ runTimeModifiable true;
 
 functions
 {
-
     residuals
     {
         type            residuals;
@@ -53,8 +52,9 @@ functions
         enabled         true;
         writeControl    timeStep;
         writeInterval   1;
-        fields          (  p U k epsilon );
+        fields          ( p U k epsilon );
     }
 }
+
 
 // ************************************************************************* //

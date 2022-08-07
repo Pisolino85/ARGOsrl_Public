@@ -21,7 +21,7 @@ internalField   uniform $turbulentEps;
 
 boundaryField
 {
-    walls
+    "wall.*"
     {
         type            epsilonWallFunction;
         value           $internalField;
@@ -34,7 +34,7 @@ boundaryField
         value           $internalField;
     }
 
-    outlet
+    "outlet.*"
     {
 /*        type            inletOutlet;*/
 /*        inletValue      $internalField;*/
