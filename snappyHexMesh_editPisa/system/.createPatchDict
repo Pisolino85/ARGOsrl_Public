@@ -1,0 +1,116 @@
+FoamFile
+{
+	version     2.0;
+	format      ascii;
+	class       dictionary;
+	location    "system";
+	object      createPatchDict;
+}
+
+pointSync   false;
+
+patches
+(
+	{
+		name   walls-tmp;
+		constructFrom   patches;
+		patches   ( "wall.*" );
+		patchInfo
+		{
+			type   wall;
+		}
+	}
+	
+	{
+		name   inlet-tmp;
+		constructFrom   patches;
+		patches   ( "inlet.*" );
+		patchInfo
+		{
+			type   patch;
+		}
+	}
+	
+
+	{
+		name   outlet-tmp;
+		constructFrom   patches;
+		patches   ( "outlet.*" );
+		patchInfo
+		{
+			type   patch;
+		}
+	}
+
+
+// solo se presente la symmetry
+	SCRIPT-SYMMETRY
+
+// boundary cyclic
+//    {
+//        // Name of new patch
+//        name perio1-tmp;
+//
+//        // Dictionary to construct new patch from
+//        patchInfo
+//        {
+//            type cyclicAMI;
+//            neighbourPatch perio2-tmp;
+//
+//            // Optional: explicitly set transformation tensor.
+//            // Used when matching and synchronising points.
+//            // transform rotational;
+//            // rotationAxis (1 0 0);
+//            // rotationCentre (0 0 0);
+//            // transform translational;
+//            // separationVector (0 0.1 0);
+//
+//            // Optional non-default tolerance to be able to define cyclics
+//            // on bad meshes
+//            matchTolerance 0.0001;
+//        }
+//
+//        constructFrom patches;
+//
+//        patches ( perio1 ); // front is my original front patch
+//
+//    }
+//    {
+//        // Name of new patch
+//        name perio2-tmp;
+//
+//        // Dictionary to construct new patch from
+//        patchInfo
+//        {
+//            type cyclicAMI;
+//            neighbourPatch perio1-tmp;
+//
+//            // Optional: explicitly set transformation tensor.
+//            // Used when matching and synchronising points.
+//            // transform rotational;
+//            // rotationAxis (1 0 0);
+//            // rotationCentre (0 0 0);
+//            // transform translational;
+//            // separationVector (0 -0.1 0);
+//            matchTolerance 0.0001;
+//        }
+//
+//        constructFrom patches;
+//
+//        patches ( perio2 ); // back is my original back patch
+//
+//    }
+
+        // Esempio di patch accoppiata [i.e. due baffle
+//	{
+//		name   immissori-tmp;
+//		constructFrom   patches;
+//		patches   ( baffle );
+//		patchInfo
+//		{
+//			type   mappedPatch;
+//                        sampleMode nearestPatchFace;
+//                        samplePatch pressure-outlet-tmp;
+//		}
+//	}
+);

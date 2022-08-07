@@ -1,0 +1,77 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  7  
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      surfaceFeaturesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+
+inlet.stl
+{
+	extractionMethod    extractFromSurface;
+	includedAngle       150;
+	subsetFeatures
+	{
+		nonManifoldEdges       no;
+		openEdges       yes;
+	}
+	writeObj            yes;
+}
+
+outlet_1.stl
+{
+	extractionMethod    extractFromSurface;
+	includedAngle       150;
+	subsetFeatures
+	{
+		nonManifoldEdges       no;
+		openEdges       yes;
+	}
+	writeObj            yes;
+}
+
+outlet_2.stl
+{
+	extractionMethod    extractFromSurface;
+	includedAngle       150;
+	subsetFeatures
+	{
+		nonManifoldEdges       no;
+		openEdges       yes;
+	}
+	writeObj            yes;
+}
+
+outlet_3.stl
+{
+	extractionMethod    extractFromSurface;
+	includedAngle       150;
+	subsetFeatures
+	{
+		nonManifoldEdges       no;
+		openEdges       yes;
+	}
+	writeObj            yes;
+}
+
+wall.stl
+{
+	extractionMethod    extractFromSurface;
+	includedAngle       150;
+	subsetFeatures
+	{
+		nonManifoldEdges       no;
+		openEdges       yes;
+	}
+	writeObj            yes;
+}

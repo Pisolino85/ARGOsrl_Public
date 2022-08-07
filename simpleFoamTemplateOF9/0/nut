@@ -1,0 +1,56 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      nut;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 2 -1 0 0 0 0];
+
+internalField   uniform 0;
+
+/*A range of wall function models is available in OpenFOAM that are applied as boundary conditions on individual patches. 
+This enables diﬀerent wall function models to be applied to diﬀerent wall regions. 
+The choice of wall function model is speciﬁed through the turbulent viscosity ﬁeld eqn in the 0/nut ﬁle.
+EXAMPLE: nutWallFunction, nutRoughWallFunction, nutUSpaldingWallFunction, nutkWallFunction and nutkAtmWallFunction.
+ */
+
+boundaryField
+{
+
+
+    inlet
+    {
+        type            calculated;
+        value           uniform 0;
+    }
+
+    "outlet.*"
+    {
+        type            calculated;
+        value           uniform 0;
+    }
+
+    "wall.*"
+    {
+        type            nutkWallFunction;
+        value           uniform 0;
+    }
+
+    "symmet.*"
+    {
+        type            symmetry;
+    }
+}
+
+
+// ************************************************************************* //
