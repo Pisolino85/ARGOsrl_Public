@@ -5,14 +5,25 @@ cd ${0%/*} || exit 1    # Run from this directory
 source /opt/openfoam9/etc/bashrc
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
-#in case it is a restart
-runApplication reconstructPar 
+#check if it is new run or a restart
+DIR="0/"
+if [ -d "$DIR" ]; then
+  ### Take action if $DIR exists ###
+  echo "Restart case..."
+  runApplication reconstructPar 
 
-# Cleaning
-rm -r processor*
+  # Cleaning
+  rm -r processor*
 
-# remove log files
-rm log.*
+  # remove log files
+  rm log.*
+  
+else
+  ###  Control will jump here if $DIR does NOT exists ###
+  echo "New case, copying 0.org"
+  cp -r 0.org 0
+fi
+
 
 #MESH IMPORT
 
@@ -63,11 +74,11 @@ runApplication reconstructPar
 rm -r processor*
 
 # CALCULATE YPLUS 
-mv log.simpleFoam log.simpleFoam_solving
+mv log.rhoSimpleFoam log.rhoSimpleFoam_solving
 cp -r 0 .0
-
 runApplication $(getApplication) -postProcess -func yPlus
-mv log.simpleFoam log.simpleFoam_yPlus
+mv log.rhoSimpleFoam log.rhoSimpleFoam_yPlus
+
 
 # POSTPROCESSING OF OUTPUT FLOWS
 # cerco tutte le boundary che hanno 'out' nel nome (es. outlet_1) e estrapolo le portate per ognuna

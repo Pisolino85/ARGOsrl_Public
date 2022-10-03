@@ -9,11 +9,12 @@ FoamFile
 {
     format          ascii;
     class           dictionary;
+    location        "system";
     object          controlDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application     simpleFoam;
+application     rhoSimpleFoam;
 
 startFrom       latestTime;
 
@@ -21,17 +22,17 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         2000;
+endTime         4500;
 
 deltaT          1;
 
 writeControl    timeStep;
 
-writeInterval   50;
+writeInterval   5;
 
-purgeWrite      2;
+purgeWrite      3;
 
-writeFormat     binary;
+writeFormat     ascii;
 
 writePrecision  6;
 
@@ -40,6 +41,8 @@ writeCompression off;
 timeFormat      general;
 
 timePrecision   6;
+
+graphFormat     raw;
 
 runTimeModifiable true;
 
@@ -52,7 +55,7 @@ functions
         enabled         true;
         writeControl    timeStep;
         writeInterval   1;
-        fields          ( p U k epsilon );
+        fields          ( p U k epsilon e h );
     }
 }
 

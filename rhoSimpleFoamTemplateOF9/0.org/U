@@ -1,0 +1,72 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include        "include/initialConditions"
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform (0 0 0);
+
+boundaryField
+{
+    "wall.*"
+    {
+        type            noSlip;
+    }
+
+    inlet
+    {
+    
+// INLET DI VELOCITA' O PORTATA IMPOSTA
+
+/*        type            uniformFixedValue;*/
+/*        uniformValue    table*/
+/*        (*/
+/*            (0   (0 0 0))*/
+/*            (500   (165 0 0))*/
+/*        );*/
+            
+        
+        
+/*        type            flowRateInletVelocity;*/
+/*        massFlowRate    constant $massFlowRate_val;*/
+/*        massFlowRate    table ((0 0)(500 $massFlowRate_val));*/
+/*        rhoInlet        1.2;*/
+/*        value           uniform (0 0 0);*/
+
+
+
+// INLET DI PRESSIONE IMPOSTA
+
+        // condizione RUGGERO per inlet di pressione
+        type                pressureInletUniformVelocity;
+        value               $internalField;
+
+    }
+
+    "outle.*"
+    {
+        type            zeroGradient;
+
+    }
+
+
+    "symmet.*"
+    {
+        type            symmetry;
+    }
+}
+
+// ************************************************************************* //
